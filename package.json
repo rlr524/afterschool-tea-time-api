@@ -1,0 +1,11 @@
+{
+  "name": "afterschool-tea-time-api",
+  "version": "0.1.0",
+  "description": "API for the AfterschoolTeaTime ecommerce site",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Rob Ranf",
+  "license": "ISC"
+}
