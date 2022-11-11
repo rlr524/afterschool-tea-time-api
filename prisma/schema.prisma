@@ -1,0 +1,88 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// The CustomerAccount table has a 1:M relationship with the Customer table
+model CustomerAccount {
+  customerAccountID       String             @id @default(uuid())
+  customerAccountNumber   Int                @unique
+  customerLogin           String             @unique
+  customerPassword        String
+  customerBillingAddLn1   String
+  customerBillingAddLn2   String
+  customerBillingAddCity  String
+  customerBillingAddState String
+  customerBillingAddZIP   String
+  customerAccountActive   Boolean            @default(true)
+  createdAt               DateTime           @default(now())
+  updatedAt               DateTime           @updatedAt
+  customers               Customer[]
+  salesTransactions       SalesTransaction[]
+}
+
+// The customer table has a M:1 relationship with the CustomerAccount table (e.g. members of a family can use
+// the same customer login and account, but have their own favorites list and purchase history).
+model Customer {
+  customerID            String             @id @default(uuid())
+  customerLastName      String
+  customerFirstName     String
+  customerMiddleInitial String
+  customerActive        Boolean            @default(true)
+  account               CustomerAccount    @relation(fields: [accountID], references: [customerAccountID])
+  accountID             String
+  createdAt             DateTime           @default(now())
+  updatedAt             DateTime           @updatedAt
+  customerDetail        CustomerDetail[]
+  salesTransactions     SalesTransaction[]
+}
+
+// The CustomerDetail table has a 1:1 relationship with the Customer table
+model CustomerDetail {
+  customerDetailID     String   @id @default(uuid())
+  customerEmail        String
+  customerPhone        String
+  customerShipAddLn1   String
+  customerShipAddLn2   String
+  customerShipAddCity  String
+  customerShipAddState String
+  customerShipAddZIP   String
+  customerDOB          DateTime
+  customer             Customer @relation(fields: [customerID], references: [customerID])
+  customerID           String
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+}
+
+model Product {
+  productID         String             @id @default(uuid())
+  productName       String             @unique @db.VarChar(255)
+  productCategory   String
+  productActive     Boolean            @default(true)
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  salesTransactions SalesTransaction[]
+}
+
+// The Product table and the SalesTransaction table have a M:M relationship.
+// The CustomerAccount table and the SalesTransaction table have a M:1 relationship
+// The Customer table and the SalesTransaction table have a M:1 relationship
+model SalesTransaction {
+  transactionID                    String          @id @default(uuid())
+  transactionDate                  DateTime
+  products                         Product[]
+  customerAccount                  CustomerAccount @relation(fields: [customerAccountCustomerAccountID], references: [customerAccountID])
+  customerAccountCustomerAccountID String
+  customer                         Customer        @relation(fields: [customerCustomerID], references: [customerID])
+  customerCustomerID               String
+  transactionVoid                  Boolean         @default(false)
+  createdAt                        DateTime        @default(now())
+  updatedAt                        DateTime        @updatedAt
+}
