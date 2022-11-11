@@ -17,7 +17,7 @@ model CustomerAccount {
   customerLogin           String             @unique
   customerPassword        String
   customerBillingAddLn1   String
-  customerBillingAddLn2   String
+  customerBillingAddLn2   String?
   customerBillingAddCity  String
   customerBillingAddState String
   customerBillingAddZIP   String
@@ -32,9 +32,9 @@ model CustomerAccount {
 // the same customer login and account, but have their own favorites list and purchase history).
 model Customer {
   customerID            String             @id @default(uuid())
-  customerLastName      String
-  customerFirstName     String
-  customerMiddleInitial String
+  customerLastName      String             @db.VarChar(255)
+  customerFirstName     String             @db.VarChar(255)
+  customerMiddleInitial String?            @db.VarChar(1)
   customerActive        Boolean            @default(true)
   account               CustomerAccount    @relation(fields: [accountID], references: [customerAccountID])
   accountID             String
@@ -42,6 +42,7 @@ model Customer {
   updatedAt             DateTime           @updatedAt
   customerDetail        CustomerDetail[]
   salesTransactions     SalesTransaction[]
+  customerFeedback      CustomerFeedback[]
 }
 
 // The CustomerDetail table has a 1:1 relationship with the Customer table
@@ -50,25 +51,70 @@ model CustomerDetail {
   customerEmail        String
   customerPhone        String
   customerShipAddLn1   String
-  customerShipAddLn2   String
+  customerShipAddLn2   String?
   customerShipAddCity  String
   customerShipAddState String
   customerShipAddZIP   String
   customerDOB          DateTime
-  customer             Customer @relation(fields: [customerID], references: [customerID])
-  customerID           String
+  customer             Customer @relation(fields: [customerCustomerID], references: [customerID])
+  customerCustomerID   String
   createdAt            DateTime @default(now())
   updatedAt            DateTime @updatedAt
 }
 
 model Product {
-  productID         String             @id @default(uuid())
-  productName       String             @unique @db.VarChar(255)
-  productCategory   String
-  productActive     Boolean            @default(true)
-  createdAt         DateTime           @default(now())
-  updatedAt         DateTime           @updatedAt
-  salesTransactions SalesTransaction[]
+  productID                        String             @id @default(uuid())
+  productName                      String             @unique @db.VarChar(255)
+  productActive                    Boolean            @default(true)
+  productCategory                  ProductCategory    @relation(fields: [productCategoryProductCategoryID], references: [productCategoryID])
+  createdAt                        DateTime           @default(now())
+  updatedAt                        DateTime           @updatedAt
+  salesTransactions                SalesTransaction[]
+  productDetail                    ProductDetail[]
+  productVendor                    ProductVendor?     @relation(fields: [productVendorProductVendorID], references: [productVendorID])
+  productVendorProductVendorID     String?
+  productCategoryProductCategoryID String
+}
+
+// The ProductDetail table has a 1:1 relationship with the Product table
+model ProductDetail {
+  productDetailID    String   @id @default(uuid())
+  productDescription String   @db.VarChar(255)
+  productCost        Float
+  productRetail      Float
+  productSKU         String
+  productSizes       String[]
+  productColors      String[]
+  productFlavors     String[]
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  product            Product  @relation(fields: [productProductID], references: [productID])
+  productProductID   String
+}
+
+// The ProductCategory table has a 1:M relationhip with the Product table
+model ProductCategory {
+  productCategoryID   String    @id @default(uuid())
+  productCategoryName String    @db.VarChar(255)
+  products            Product[]
+}
+
+// The ProductVendor table has a 1:M relationship with the Products table
+model ProductVendor {
+  productVendorID       String    @id @default(uuid())
+  productVendorName     String    @db.VarChar(255)
+  productVendorEmail    String
+  productVendorPhone    String
+  productVendorAddLn1   String
+  productVendorAddLn2   String?
+  productVendorAddCity  String
+  productVendorAddState String
+  productVendorAddZIP   String
+  productVendorActive   Boolean   @default(true)
+  productVendorTerms    String
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  products              Product[]
 }
 
 // The Product table and the SalesTransaction table have a M:M relationship.
@@ -85,4 +131,13 @@ model SalesTransaction {
   transactionVoid                  Boolean         @default(false)
   createdAt                        DateTime        @default(now())
   updatedAt                        DateTime        @updatedAt
+}
+
+model CustomerFeedback {
+  customerFeedbackID String    @id @default(uuid())
+  customerFeedback   String
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  customer           Customer? @relation(fields: [customerCustomerID], references: [customerID])
+  customerCustomerID String
 }
