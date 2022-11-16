@@ -3,12 +3,11 @@ import { Router } from "express";
 const router = Router();
 
 /**
- * @public
  * @description - All product route handlers
  */
 
-router.get("/product", () => {
-	//
+router.get("/product", (req, res) => {
+	res.json({ message: "Hello from the /product route get request" });
 });
 router.get("/product/:id", () => {
 	//
@@ -24,7 +23,6 @@ router.delete("/product/:id", () => {
 });
 
 /**
- * @public
  * @description - All customer route handlers
  */
 
@@ -45,7 +43,6 @@ router.delete("/customer/:id", () => {
 });
 
 /**
- * @public
  * @description - All customer account route handlers
  */
 
@@ -64,3 +61,5 @@ router.post("/account", () => {
 router.delete("/account/:id", () => {
 	//
 });
+
+export default router;
