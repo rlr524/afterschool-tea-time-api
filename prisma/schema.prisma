@@ -10,7 +10,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// The CustomerAccount table has a 1:M relationship with the Customer table
+// The CustomerAccount table has a 1:M relationship with the CustomerProfile table
 model CustomerAccount {
   customerAccountID       String             @id @default(uuid())
   customerAccountNumber   Int                @unique
@@ -24,13 +24,13 @@ model CustomerAccount {
   customerAccountActive   Boolean            @default(true)
   createdAt               DateTime           @default(now())
   updatedAt               DateTime           @updatedAt
-  customers               Customer[]
+  customers               CustomerProfile[]
   salesTransactions       SalesTransaction[]
 }
 
-// The customer table has a M:1 relationship with the CustomerAccount table (e.g. members of a family can use
-// the same customer login and account, but have their own favorites list and purchase history).
-model Customer {
+// The CustomerProfile table has a M:1 relationship with the CustomerAccount table (e.g. members of a family can use
+// the same customer login and account, but have their own profiles, e.g., favorites list and purchase history).
+model CustomerProfile {
   customerID            String             @id @default(uuid())
   customerLastName      String             @db.VarChar(255)
   customerFirstName     String             @db.VarChar(255)
@@ -47,7 +47,7 @@ model Customer {
 
 // The CustomerDetail table has a 1:1 relationship with the Customer table
 model CustomerDetail {
-  customerDetailID     String   @id @default(uuid())
+  customerDetailID     String          @id @default(uuid())
   customerEmail        String
   customerPhone        String
   customerShipAddLn1   String
@@ -56,10 +56,10 @@ model CustomerDetail {
   customerShipAddState String
   customerShipAddZIP   String
   customerDOB          DateTime
-  customer             Customer @relation(fields: [customerCustomerID], references: [customerID])
+  customer             CustomerProfile @relation(fields: [customerCustomerID], references: [customerID])
   customerCustomerID   String
-  createdAt            DateTime @default(now())
-  updatedAt            DateTime @updatedAt
+  createdAt            DateTime        @default(now())
+  updatedAt            DateTime        @updatedAt
 }
 
 model Product {
@@ -126,7 +126,7 @@ model SalesTransaction {
   products                         Product[]
   customerAccount                  CustomerAccount @relation(fields: [customerAccountCustomerAccountID], references: [customerAccountID])
   customerAccountCustomerAccountID String
-  customer                         Customer        @relation(fields: [customerCustomerID], references: [customerID])
+  customer                         CustomerProfile @relation(fields: [customerCustomerID], references: [customerID])
   customerCustomerID               String
   transactionVoid                  Boolean         @default(false)
   createdAt                        DateTime        @default(now())
@@ -134,10 +134,10 @@ model SalesTransaction {
 }
 
 model CustomerFeedback {
-  customerFeedbackID String    @id @default(uuid())
+  customerFeedbackID String           @id @default(uuid())
   customerFeedback   String
-  createdAt          DateTime  @default(now())
-  updatedAt          DateTime  @updatedAt
-  customer           Customer? @relation(fields: [customerCustomerID], references: [customerID])
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+  customer           CustomerProfile? @relation(fields: [customerCustomerID], references: [customerID])
   customerCustomerID String
 }
