@@ -1,6 +1,6 @@
 import express from "express";
 import router from "./routes/v1";
-import { routeMessage } from "./middleware/response";
+import { protect } from "./modules/auth";
 import morgan from "morgan";
 import fs from "fs";
 import path from "path";
@@ -17,7 +17,6 @@ app.use(cors());
 app.use(morgan("combined", { stream: accessLogStream }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(routeMessage);
 
 app.get("/", (req, res) => {
 	console.log("Hello, Madison from express");
@@ -25,6 +24,6 @@ app.get("/", (req, res) => {
 	res.json({ message: "Hello, Madison. This is express." });
 });
 
-app.use("/api/v1/", router);
+app.use("/api/v1/", protect, router);
 
 export default app;
