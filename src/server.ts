@@ -1,4 +1,5 @@
-import { createNewCustomerAccount, signin } from "./handlers/customer";
+import { createCustomerAccount, signin } from "./handlers/customer";
+import { createUserAccount, userSignin } from "./handlers/user";
 import express from "express";
 import router from "./routes/v1";
 import { protect } from "./middleware";
@@ -28,7 +29,9 @@ app.get("/", (req, res) => {
 app.use("/api/v1/", protect, router);
 
 // Handle these routes separate from all other routes to avoid the protect middleware.
-app.post("/account", createNewCustomerAccount);
+app.post("/account", createCustomerAccount);
 app.post("/signin", signin);
+app.post("/sensei-account", createUserAccount);
+app.post("/sensei-signin", userSignin);
 
 export default app;

@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { body, validationResult } from "express-validator";
 
 const r = Router();
 
@@ -32,9 +33,28 @@ r.get("/customer", () => {
 r.get("/customer/:id", () => {
 	//
 });
-r.put("/customer/:id", () => {
-	//
-});
+r.put(
+	"/customer/:id",
+	body("lastname").isString(),
+	body("firstname").isString(),
+	body("middleinitial").isString(),
+	body("email").isString(),
+	body("customerPhone").isString(),
+	body("customerShipAddLn1").isString(),
+	body("customerShipAddLn2").isString(),
+	body("customerShipAddCity").isString(),
+	body("customerShipAddState").isString(),
+	body("customerShipAddZIP").isString(),
+	body("customerDOB").isDate(),
+	(req, res) => {
+		const errors = validationResult(req);
+
+		if (!errors.isEmpty()) {
+			res.status(400);
+			res.json({ errors: errors.array() });
+		}
+	}
+);
 r.post("/customer", () => {
 	//
 });

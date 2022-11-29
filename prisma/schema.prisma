@@ -13,14 +13,15 @@ datasource db {
 // The UserAccount table has no relationships to other tables and is only for internal account use
 // Account Levels: ADMIN, CUSTSERV, PRODMGMT, FINANCE, OPERATIONS
 model UserAccount {
-  userAccountID       String   @id @default(uuid())
-  userAccountLogin    String   @unique
+  userAccountID       String         @id @default(uuid())
+  userAccountLogin    String         @unique
   userAccountPassword String
-  userAccountLevel    String
+  userAccountLevel    String         @default("CUSTSERV")
   userAccountEmail    String
-  userAccountActive   Boolean
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt
+  userAccountActive   Boolean        @default(true)
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
+  ProductOrder        ProductOrder[]
 }
 
 // The CustomerAccount table has a 1:M relationship with the CustomerProfile table
@@ -91,18 +92,31 @@ model Product {
 
 // The ProductDetail table has a 1:1 relationship with the Product table
 model ProductDetail {
-  productDetailID    String   @id @default(uuid())
-  productDescription String   @db.VarChar(255)
+  productDetailID    String             @id @default(uuid())
+  productDescription String             @db.VarChar(255)
   productCost        Float
   productRetail      Float
+  productSaleRetail  Float
   productSKU         String
-  productSizes       String[]
-  productColors      String[]
-  productFlavors     String[]
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @updatedAt
-  product            Product  @relation(fields: [productProductID], references: [productID])
+  productSize        String
+  productColor       String
+  productFlavor      String
+  productSaleFlag    Boolean            @default(false)
+  productStartDate   DateTime
+  productEndDate     DateTime
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+  product            Product            @relation(fields: [productProductID], references: [productID])
   productProductID   String
+  ProductInventory   ProductInventory[]
+  ProductOrder       ProductOrder[]
+}
+
+model ProductInventory {
+  inventoryID                  String        @id @default(uuid())
+  countOnHand                  Int
+  product                      ProductDetail @relation(fields: [productDetailProductDetailID], references: [productDetailID])
+  productDetailProductDetailID String
 }
 
 // The ProductCategory table has a 1:M relationhip with the Product table
@@ -110,6 +124,19 @@ model ProductCategory {
   productCategoryID   String    @id @default(uuid())
   productCategoryName String    @db.VarChar(255)
   products            Product[]
+}
+
+model ProductOrder {
+  productOrderID               String        @id @default(uuid())
+  poNumber                     String
+  products                     ProductDetail @relation(fields: [productDetailProductDetailID], references: [productDetailID])
+  productDetailProductDetailID String
+  poExtendedCost               Float
+  poExtendedRetail             Float
+  poFreight                    Float
+  poDiscount                   Float
+  poProductManager             UserAccount   @relation(fields: [userAccountUserAccountID], references: [userAccountID])
+  userAccountUserAccountID     String
 }
 
 // The ProductVendor table has a 1:M relationship with the Products table
