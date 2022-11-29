@@ -10,6 +10,19 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// The UserAccount table has no relationships to other tables and is only for internal account use
+// Account Levels: ADMIN, CUSTSERV, PRODMGMT, FINANCE, OPERATIONS
+model UserAccount {
+  userAccountID       String   @id @default(uuid())
+  userAccountLogin    String   @unique
+  userAccountPassword String
+  userAccountLevel    String
+  userAccountEmail    String
+  userAccountActive   Boolean
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}
+
 // The CustomerAccount table has a 1:M relationship with the CustomerProfile table
 model CustomerAccount {
   customerAccountID       String             @id @default(uuid())

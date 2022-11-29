@@ -55,9 +55,6 @@ r.get("/account/:id", () => {
 r.put("/account/:id", () => {
 	//
 });
-r.post("/account", () => {
-	//
-});
 r.delete("/account/:id", () => {
 	//
 });
