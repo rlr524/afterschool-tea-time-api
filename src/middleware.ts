@@ -1,3 +1,4 @@
+import { validationResult } from "express-validator";
 import jwt from "jsonwebtoken";
 
 export const protect = (req, res, next) => {
@@ -26,5 +27,16 @@ export const protect = (req, res, next) => {
 		res.status(401);
 		res.json({ message: "not authorized" });
 		return;
+	}
+};
+
+export const handleInputErrors = (req, res, next) => {
+	const errors = validationResult(req);
+
+	if (!errors.isEmpty()) {
+		res.status(400);
+		res.json({ errors: errors.array() });
+	} else {
+		next();
 	}
 };

@@ -1,3 +1,5 @@
+import { handleInputErrors } from "./../../middleware";
+import { updateCustomerAccount } from "./../../handlers/customer";
 import { Router } from "express";
 import { body, validationResult } from "express-validator";
 
@@ -58,13 +60,9 @@ r.put(
 	body("customerShipAddState").isString(),
 	body("customerShipAddZIP").isString(),
 	body("customerDOB").isDate(),
+	handleInputErrors,
 	(req, res) => {
-		const errors = validationResult(req);
-
-		if (!errors.isEmpty()) {
-			res.status(400);
-			res.json({ errors: errors.array() });
-		}
+		//
 	}
 );
 // Available only to authenticated customer and Senpai users ADMIN, CUSTSERV
@@ -81,13 +79,9 @@ r.post(
 	body("customerShipAddState").isString(),
 	body("customerShipAddZIP").isString(),
 	body("customerDOB").isDate(),
+	handleInputErrors,
 	(req, res) => {
-		const errors = validationResult(req);
-
-		if (!errors.isEmpty()) {
-			res.status(400);
-			res.json({ errors: errors.array });
-		}
+		//
 	}
 );
 // Available only to authenticated customer and Senpai users ADMIN, CUSTSERV
@@ -108,9 +102,31 @@ r.get("/account/:id", () => {
 	//
 });
 // Available only to authenticated customer and Senpai users ADMIN, CUSTSERV
-r.put("/account/:id", () => {
-	//
-});
+r.put(
+	"/account/:id",
+	body("login").isString(),
+	body("password").isString(),
+	body("lastname").isString(),
+	body("firstname").isString(),
+	body("middleinitial").isString(),
+	body("email").isString(),
+	body("customerPhone").isString(),
+	body("customerShipAddLn1").isString(),
+	body("customerShipAddLn2").isString(),
+	body("customerShipAddCity").isString(),
+	body("customerShipAddState").isString(),
+	body("customerShipAddZIP").isString(),
+	body("customerDOB").isDate(),
+	(req, res) => {
+		const errors = validationResult(req);
+
+		if (!errors.isEmpty()) {
+			res.status(400);
+			res.json({ errors: errors.array() });
+		}
+		updateCustomerAccount;
+	}
+);
 // Available only to authenticated customer and Senpai users ADMIN, CUSTSERV
 r.delete("/account/:id", () => {
 	//

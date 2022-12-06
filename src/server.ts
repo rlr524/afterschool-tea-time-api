@@ -1,9 +1,9 @@
 import { createCustomerAccount, signin } from "./handlers/customer";
 import { createUserAccount, userSignin } from "./handlers/user";
 import express from "express";
-import { body, validationResult } from "express-validator";
+import { body } from "express-validator";
 import router from "./routes/v1";
-import { protect } from "./middleware";
+import { handleInputErrors, protect } from "./middleware";
 import morgan from "morgan";
 import fs from "fs";
 import path from "path";
@@ -40,19 +40,20 @@ app.post(
 	body("middleinitial").isString(),
 	body("email").isString(),
 	body("customerPhone").isString(),
+	body("customerBillingAddLn1").isString(),
+	body("customerBillingAddLn2").isString(),
+	body("customerBillingAddCity").isString(),
+	body("customerBillingAddState").isString(),
+	body("customerBillingAddZIP").isString(),
 	body("customerShipAddLn1").isString(),
 	body("customerShipAddLn2").isString(),
 	body("customerShipAddCity").isString(),
 	body("customerShipAddState").isString(),
 	body("customerShipAddZIP").isString(),
 	body("customerDOB").isDate(),
+	handleInputErrors,
 	(req, res) => {
-		const errors = validationResult(req);
-
-		if (!errors.isEmpty()) {
-			res.status(400);
-			res.json({ errors: errors.array() });
-		}
+		console.log("Error handling ok, calling handler");
 		createCustomerAccount;
 	}
 );
@@ -61,13 +62,8 @@ app.post(
 	"/signin",
 	body("login").isString(),
 	body("password").isString(),
+	handleInputErrors,
 	(req, res) => {
-		const errors = validationResult(req);
-
-		if (!errors.isEmpty()) {
-			res.status(400);
-			res.json({ errors: errors.array() });
-		}
 		signin;
 	}
 );

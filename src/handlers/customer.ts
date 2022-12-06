@@ -7,7 +7,57 @@ function createAccountNumber() {
 }
 
 export const createCustomerAccount = async (req, res) => {
-	const customerLoginCandidate = req.body.username;
+	// const customerLoginCandidate = req.body.login;
+
+	// if (
+	// 	await prisma.customerAccount.findFirst({
+	// 		where: { customerLogin: customerLoginCandidate },
+	// 	})
+	// ) {
+	// 	res.status(406);
+	// 	res.json({
+	// 		message: `customer account login '${customerLoginCandidate}' is unavailable`,
+	// 	});
+	// 	return;
+	// }
+
+	console.log("Login candidate ok...adding data");
+
+	const customerAccount = await prisma.customerAccount.create({
+		data: {
+			// customerLogin: customerLoginCandidate,
+			customerLogin: req.body.login,
+			customerPassword: await hashPassword(req.body.password),
+			customerAccountNumber: createAccountNumber(),
+			customerLastName: req.body.lastname,
+			customerFirstName: req.body.firstname,
+			customerMiddleInitial: req.body.middleinitial,
+			customerEmail: req.body.email,
+			customerPhone: req.body.customerPhone,
+			customerBillingAddLn1: req.body.customerBillingAddLn1,
+			customerBillingAddLn2: req.body.customerBillingAddLn2,
+			customerBillingAddCity: req.body.customerBillingAddCity,
+			customerBillingAddState: req.body.customerBillingAddState,
+			customerBillingAddZIP: req.body.customerBillingAddZIP,
+			customerShipAddLn1: req.body.customerShipAddLn1,
+			customerShipAddLn2: req.body.customerShipAddLn2,
+			customerShipAddCity: req.body.customerShipAddCity,
+			customerShipAddState: req.body.customerShipAddState,
+			customerShipAddZIP: req.body.customerShipAddZIP,
+			customerDOB: req.body.customerDOB,
+		},
+	});
+
+	console.log("Data added...generating token");
+
+	const token = createJWT(customerAccount);
+	res.json({ token });
+};
+
+// TODO: Update this for a put vs a post
+export const updateCustomerAccount = async (req, res) => {
+	const customerLoginCandidate = req.body.login;
+	const id = "";
 
 	if (
 		await prisma.customerAccount.findFirst({
@@ -21,7 +71,10 @@ export const createCustomerAccount = async (req, res) => {
 		return;
 	}
 
-	const customerAccount = await prisma.customerAccount.create({
+	await prisma.customerAccount.update({
+		where: {
+			customerAccountID: id,
+		},
 		data: {
 			customerLogin: customerLoginCandidate,
 			customerPassword: await hashPassword(req.body.password),
@@ -33,15 +86,12 @@ export const createCustomerAccount = async (req, res) => {
 			customerBillingAddZIP: req.body.customerBillingAddZIP,
 		},
 	});
-
-	const token = createJWT(customerAccount);
-	res.json({ token });
 };
 
 export const signin = async (req, res) => {
 	const customerAccount = await prisma.customerAccount.findUnique({
 		where: {
-			customerLogin: req.body.username,
+			customerLogin: req.body.login,
 		},
 	});
 	const isValid = await comparePasswords(

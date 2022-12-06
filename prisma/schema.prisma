@@ -30,11 +30,22 @@ model CustomerAccount {
   customerAccountNumber   Int                @unique
   customerLogin           String             @unique
   customerPassword        String
+  customerLastName        String             @db.VarChar(255)
+  customerFirstName       String             @db.VarChar(255)
+  customerEmail           String
+  customerPhone           String
+  customerMiddleInitial   String?            @db.VarChar(1)
   customerBillingAddLn1   String
   customerBillingAddLn2   String?
   customerBillingAddCity  String
   customerBillingAddState String
   customerBillingAddZIP   String
+  customerShipAddLn1      String
+  customerShipAddLn2      String?
+  customerShipAddCity     String
+  customerShipAddState    String
+  customerShipAddZIP      String
+  customerDOB             DateTime
   customerAccountActive   Boolean            @default(true)
   createdAt               DateTime           @default(now())
   updatedAt               DateTime           @updatedAt
@@ -59,7 +70,7 @@ model CustomerProfile {
   customerFeedback      CustomerFeedback[]
 }
 
-// The CustomerDetail table has a 1:1 relationship with the Customer table
+// The CustomerDetail table has a 1:1 relationship with the CustomerProfile table
 model CustomerDetail {
   customerDetailID     String          @id @default(uuid())
   customerEmail        String
