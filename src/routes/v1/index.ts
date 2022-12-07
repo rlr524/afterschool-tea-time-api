@@ -1,7 +1,7 @@
 import { handleInputErrors } from "./../../middleware";
 import { updateCustomerAccount } from "./../../handlers/customer";
 import { Router } from "express";
-import { body, validationResult } from "express-validator";
+import { body } from "express-validator";
 
 const r = Router();
 
@@ -35,7 +35,7 @@ r.delete("/product/:id", () => {
 });
 
 /**
- * @description - All customer route handlers
+ * @description - All customer profile route handlers
  */
 
 // Available only to Senpai users ADMIN, CUSTSERV
@@ -49,40 +49,38 @@ r.get("/customer/:id", () => {
 // Available only to authenticated customer and Senpai users ADMIN, CUSTSERV
 r.put(
 	"/customer/:id",
-	body("lastname").isString(),
-	body("firstname").isString(),
-	body("middleinitial").isString(),
-	body("email").isString(),
-	body("customerPhone").isString(),
-	body("customerShipAddLn1").isString(),
-	body("customerShipAddLn2").isString(),
-	body("customerShipAddCity").isString(),
-	body("customerShipAddState").isString(),
-	body("customerShipAddZIP").isString(),
-	body("customerDOB").isDate(),
-	handleInputErrors,
-	(req, res) => {
-		//
-	}
+	body([
+		"lastname",
+		"firstname",
+		"middleinitial",
+		"email",
+		"customerPhone",
+		"customerShipAddLn1",
+		"customerShipAddLn2",
+		"customerShipAddCity",
+		"customerShipAddState",
+		"customerShipAddZIP",
+		"customerDOB",
+	]).isString(),
+	handleInputErrors
 );
 // Available only to authenticated customer and Senpai users ADMIN, CUSTSERV
 r.post(
 	"/customer",
-	body("lastname").isString(),
-	body("firstname").isString(),
-	body("middleinitial").isString(),
-	body("email").isString(),
-	body("customerPhone").isString(),
-	body("customerShipAddLn1").isString(),
-	body("customerShipAddLn2").isString(),
-	body("customerShipAddCity").isString(),
-	body("customerShipAddState").isString(),
-	body("customerShipAddZIP").isString(),
-	body("customerDOB").isDate(),
-	handleInputErrors,
-	(req, res) => {
-		//
-	}
+	body([
+		"lastname",
+		"firstname",
+		"middleinitial",
+		"email",
+		"customerPhone",
+		"customerShipAddLn1",
+		"customerShipAddLn2",
+		"customerShipAddCity",
+		"customerShipAddState",
+		"customerShipAddZIP",
+		"customerDOB",
+	]).isString(),
+	handleInputErrors
 );
 // Available only to authenticated customer and Senpai users ADMIN, CUSTSERV
 r.delete("/customer/:id", () => {
@@ -104,28 +102,28 @@ r.get("/account/:id", () => {
 // Available only to authenticated customer and Senpai users ADMIN, CUSTSERV
 r.put(
 	"/account/:id",
-	body("login").isString(),
-	body("password").isString(),
-	body("lastname").isString(),
-	body("firstname").isString(),
-	body("middleinitial").isString(),
-	body("email").isString(),
-	body("customerPhone").isString(),
-	body("customerShipAddLn1").isString(),
-	body("customerShipAddLn2").isString(),
-	body("customerShipAddCity").isString(),
-	body("customerShipAddState").isString(),
-	body("customerShipAddZIP").isString(),
-	body("customerDOB").isDate(),
-	(req, res) => {
-		const errors = validationResult(req);
-
-		if (!errors.isEmpty()) {
-			res.status(400);
-			res.json({ errors: errors.array() });
-		}
-		updateCustomerAccount;
-	}
+	body([
+		"login",
+		"password",
+		"lastname",
+		"firstname",
+		"middleinitial",
+		"email",
+		"customerPhone",
+		"customerBillingAddLn1",
+		"customerBillingAddLn2",
+		"customerBillingAddCity",
+		"customerBillingAddState",
+		"customerBillingAddZIP",
+		"customerShipAddLn1",
+		"customerShipAddLn2",
+		"customerShipAddCity",
+		"customerShipAddState",
+		"customerShipAddZIP",
+		"customerDOB",
+	]).isString(),
+	handleInputErrors,
+	updateCustomerAccount
 );
 // Available only to authenticated customer and Senpai users ADMIN, CUSTSERV
 r.delete("/account/:id", () => {

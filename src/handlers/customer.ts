@@ -7,26 +7,26 @@ function createAccountNumber() {
 }
 
 export const createCustomerAccount = async (req, res) => {
-	// const customerLoginCandidate = req.body.login;
+	const customerLoginCandidate = req.body.login;
+	console.log("Customer login candidate is: " + customerLoginCandidate);
 
-	// if (
-	// 	await prisma.customerAccount.findFirst({
-	// 		where: { customerLogin: customerLoginCandidate },
-	// 	})
-	// ) {
-	// 	res.status(406);
-	// 	res.json({
-	// 		message: `customer account login '${customerLoginCandidate}' is unavailable`,
-	// 	});
-	// 	return;
-	// }
+	if (
+		await prisma.customerAccount.findFirst({
+			where: { customerLogin: customerLoginCandidate },
+		})
+	) {
+		res.status(406);
+		res.json({
+			message: `customer account login '${customerLoginCandidate}' is unavailable`,
+		});
+		return;
+	}
 
 	console.log("Login candidate ok...adding data");
 
 	const customerAccount = await prisma.customerAccount.create({
 		data: {
-			// customerLogin: customerLoginCandidate,
-			customerLogin: req.body.login,
+			customerLogin: customerLoginCandidate,
 			customerPassword: await hashPassword(req.body.password),
 			customerAccountNumber: createAccountNumber(),
 			customerLastName: req.body.lastname,
@@ -89,11 +89,13 @@ export const updateCustomerAccount = async (req, res) => {
 };
 
 export const signin = async (req, res) => {
+	console.log("attempting signin...");
 	const customerAccount = await prisma.customerAccount.findUnique({
 		where: {
 			customerLogin: req.body.login,
 		},
 	});
+	console.log(customerAccount);
 	const isValid = await comparePasswords(
 		req.body.password,
 		customerAccount.customerPassword

@@ -45,7 +45,7 @@ model CustomerAccount {
   customerShipAddCity     String
   customerShipAddState    String
   customerShipAddZIP      String
-  customerDOB             DateTime
+  customerDOB             String?
   customerAccountActive   Boolean            @default(true)
   createdAt               DateTime           @default(now())
   updatedAt               DateTime           @updatedAt
@@ -80,7 +80,7 @@ model CustomerDetail {
   customerShipAddCity  String
   customerShipAddState String
   customerShipAddZIP   String
-  customerDOB          DateTime
+  customerDOB          String?
   customer             CustomerProfile @relation(fields: [customerCustomerID], references: [customerID])
   customerCustomerID   String
   createdAt            DateTime        @default(now())

@@ -29,43 +29,41 @@ app.get("/", (req, res) => {
 
 app.use("/api/v1/", protect, router);
 
-// Handle these routes separate from all other routes to avoid the protect middleware.
+// Handle these routes separate from all other routes to avoid the protect middleware as these routes
+// are available to any user whether authenticated or not.
 // TODO: Refactor the express-validator functions into a separate middleware
+// TODO: Find a different way to server validate DOB without using express-validator and use DATE as the type
 app.post(
 	"/account",
-	body("login").isString(),
-	body("password").isString(),
-	body("lastname").isString(),
-	body("firstname").isString(),
-	body("middleinitial").isString(),
-	body("email").isString(),
-	body("customerPhone").isString(),
-	body("customerBillingAddLn1").isString(),
-	body("customerBillingAddLn2").isString(),
-	body("customerBillingAddCity").isString(),
-	body("customerBillingAddState").isString(),
-	body("customerBillingAddZIP").isString(),
-	body("customerShipAddLn1").isString(),
-	body("customerShipAddLn2").isString(),
-	body("customerShipAddCity").isString(),
-	body("customerShipAddState").isString(),
-	body("customerShipAddZIP").isString(),
-	body("customerDOB").isDate(),
+	body([
+		"login",
+		"password",
+		"lastname",
+		"firstname",
+		"middleinitial",
+		"email",
+		"customerPhone",
+		"customerBillingAddLn1",
+		"customerBillingAddLn2",
+		"customerBillingAddCity",
+		"customerBillingAddState",
+		"customerBillingAddZIP",
+		"customerShipAddLn1",
+		"customerShipAddLn2",
+		"customerShipAddCity",
+		"customerShipAddState",
+		"customerShipAddZIP",
+		"customerDOB",
+	]).isString(),
 	handleInputErrors,
-	(req, res) => {
-		console.log("Error handling ok, calling handler");
-		createCustomerAccount;
-	}
+	createCustomerAccount
 );
 
 app.post(
 	"/signin",
-	body("login").isString(),
-	body("password").isString(),
+	body(["login", "password"]).isString(),
 	handleInputErrors,
-	(req, res) => {
-		signin;
-	}
+	signin
 );
 
 app.post("/sensei-account", createUserAccount);
@@ -73,7 +71,6 @@ app.post("/sensei-signin", userSignin);
 app.get("/product", (req, res) => {
 	res.json({ message: "Hello from the /product route" });
 });
-// Open route
 app.get("/product/:id", () => {
 	//
 });
