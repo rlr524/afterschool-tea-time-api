@@ -1,5 +1,6 @@
 import { createCustomerAccount, signin } from "./handlers/customer";
 import { createUserAccount, userSignin } from "./handlers/user";
+import { getOneProduct, getAllProducts } from "./handlers/product";
 import express from "express";
 import { body } from "express-validator";
 import router from "./routes/v1";
@@ -29,10 +30,12 @@ app.get("/", (req, res) => {
 
 app.use("/api/v1/", protect, router);
 
-// Handle these routes separate from all other routes to avoid the protect middleware as these routes
-// are available to any user whether authenticated or not.
-// TODO: Refactor the express-validator functions into a separate middleware
-// TODO: Find a different way to server validate DOB without using express-validator and use DATE as the type
+/**
+ * @description - Handle these routes separate from all other routes to avoid the protect middleware as these routes are available to any user whether authenticated or not.
+ * @todo - Refactor the express-validator functions into a separate middleware
+ * @todo - Find a different way to server validate DOB without using express-validator and use DATE as the type. This is because express-validator hangs if any other type checks are chained onto isString().
+ */
+
 app.post(
 	"/account",
 	body([
@@ -58,7 +61,6 @@ app.post(
 	handleInputErrors,
 	createCustomerAccount
 );
-
 app.post(
 	"/signin",
 	body(["login", "password"]).isString(),
@@ -66,13 +68,10 @@ app.post(
 	signin
 );
 
+app.get("/product", getAllProducts);
+app.get("/product/:id", getOneProduct);
+
 app.post("/sensei-account", createUserAccount);
 app.post("/sensei-signin", userSignin);
-app.get("/product", (req, res) => {
-	res.json({ message: "Hello from the /product route" });
-});
-app.get("/product/:id", () => {
-	//
-});
 
 export default app;

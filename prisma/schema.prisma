@@ -63,11 +63,13 @@ model CustomerProfile {
   customerActive        Boolean            @default(true)
   account               CustomerAccount    @relation(fields: [accountID], references: [customerAccountID])
   accountID             String
+  favorites             Product[]
   createdAt             DateTime           @default(now())
   updatedAt             DateTime           @updatedAt
   customerDetail        CustomerDetail[]
   salesTransactions     SalesTransaction[]
   customerFeedback      CustomerFeedback[]
+  productProductID      String
 }
 
 // The CustomerDetail table has a 1:1 relationship with the CustomerProfile table
@@ -99,6 +101,9 @@ model Product {
   productVendor                    ProductVendor?     @relation(fields: [productVendorProductVendorID], references: [productVendorID])
   productVendorProductVendorID     String?
   productCategoryProductCategoryID String
+  CustomerProfile                  CustomerProfile?   @relation(fields: [customerProfileCustomerID], references: [customerID])
+  customerProfileCustomerID        String?
+  productInventoryInventoryID      String
 }
 
 // The ProductDetail table has a 1:1 relationship with the Product table
