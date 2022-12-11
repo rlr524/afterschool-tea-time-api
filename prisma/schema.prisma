@@ -60,33 +60,23 @@ model CustomerProfile {
   customerLastName      String             @db.VarChar(255)
   customerFirstName     String             @db.VarChar(255)
   customerMiddleInitial String?            @db.VarChar(1)
+  customerEmail         String
+  customerPhone         String
+  customerShipAddLn1    String
+  customerShipAddLn2    String?
+  customerShipAddCity   String
+  customerShipAddState  String
+  customerShipAddZIP    String
+  customerDOB           String?
   customerActive        Boolean            @default(true)
   account               CustomerAccount    @relation(fields: [accountID], references: [customerAccountID])
   accountID             String
   favorites             Product[]
   createdAt             DateTime           @default(now())
   updatedAt             DateTime           @updatedAt
-  customerDetail        CustomerDetail[]
   salesTransactions     SalesTransaction[]
   customerFeedback      CustomerFeedback[]
   productProductID      String
-}
-
-// The CustomerDetail table has a 1:1 relationship with the CustomerProfile table
-model CustomerDetail {
-  customerDetailID     String          @id @default(uuid())
-  customerEmail        String
-  customerPhone        String
-  customerShipAddLn1   String
-  customerShipAddLn2   String?
-  customerShipAddCity  String
-  customerShipAddState String
-  customerShipAddZIP   String
-  customerDOB          String?
-  customer             CustomerProfile @relation(fields: [customerCustomerID], references: [customerID])
-  customerCustomerID   String
-  createdAt            DateTime        @default(now())
-  updatedAt            DateTime        @updatedAt
 }
 
 model Product {
@@ -103,29 +93,29 @@ model Product {
   productCategoryProductCategoryID String
   CustomerProfile                  CustomerProfile?   @relation(fields: [customerProfileCustomerID], references: [customerID])
   customerProfileCustomerID        String?
-  productInventoryInventoryID      String
 }
 
 // The ProductDetail table has a 1:1 relationship with the Product table
 model ProductDetail {
-  productDetailID    String             @id @default(uuid())
-  productDescription String             @db.VarChar(255)
-  productCost        Float
-  productRetail      Float
-  productSaleRetail  Float
-  productSKU         String
-  productSize        String
-  productColor       String
-  productFlavor      String
-  productSaleFlag    Boolean            @default(false)
-  productStartDate   DateTime
-  productEndDate     DateTime
-  createdAt          DateTime           @default(now())
-  updatedAt          DateTime           @updatedAt
-  product            Product            @relation(fields: [productProductID], references: [productID])
-  productProductID   String
-  ProductInventory   ProductInventory[]
-  ProductOrder       ProductOrder[]
+  productDetailID     String             @id @default(uuid())
+  productDescription  String             @db.VarChar(255)
+  productCost         Float
+  productRetail       Float
+  productSaleRetail   Float?
+  productSKU          String
+  productDetailActive Boolean            @default(true)
+  productSize         String
+  productColor        String
+  productFlavor       String
+  productSaleFlag     Boolean            @default(false)
+  productStartDate    DateTime
+  productEndDate      DateTime
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
+  product             Product            @relation(fields: [productProductID], references: [productID])
+  productProductID    String
+  ProductInventory    ProductInventory[]
+  ProductOrder        ProductOrder[]
 }
 
 model ProductInventory {

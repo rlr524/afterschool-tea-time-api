@@ -1,5 +1,10 @@
 import { handleInputErrors } from "./../../middleware";
 import { updateCustomerAccount } from "./../../handlers/customer";
+import {
+	createProduct,
+	updateProduct,
+	deleteProduct,
+} from "./../../handlers/product";
 import { Router } from "express";
 import { body } from "express-validator";
 
@@ -18,35 +23,39 @@ const r = Router();
  */
 
 /**
- * @description - Senpai user roduct route handlers
+ * @description - Sensei user product route handlers
  */
 
-// Available only to Senpai users ADMIN, PRODMGMT
-r.put("/product/:id", () => {
-	//
-});
-// Available only to Senpai users ADMIN, PRODMGMT
-r.post("/product", () => {
-	//
-});
-// Available only to Senpai users ADMIN, PRODMGMT
-r.delete("/product/:id", () => {
-	//
-});
+// Available only to Sensei users ADMIN, PRODMGMT
+r.put(
+	"/product/:id",
+	body(["productname", "productvendor", "productcategory"]).isString(),
+	handleInputErrors,
+	updateProduct
+);
+// Available only to Sensei users ADMIN, PRODMGMT
+r.post(
+	"/product",
+	body(["productname", "productvendor", "productcategory"]).isString(),
+	handleInputErrors,
+	createProduct
+);
+// Available only to Sensei users ADMIN, PRODMGMT
+r.delete("/product/:id", deleteProduct);
 
 /**
  * @description - All customer profile route handlers
  */
 
-// Available only to Senpai users ADMIN, CUSTSERV
+// Available only to Sensei users ADMIN, CUSTSERV
 r.get("/customer", () => {
 	//
 });
-// Available only to authenticated customer and Senpai users ADMIN, CUSTSERV
+// Available only to authenticated customer and Sensei users ADMIN, CUSTSERV
 r.get("/customer/:id", () => {
 	//
 });
-// Available only to authenticated customer and Senpai users ADMIN, CUSTSERV
+// Available only to authenticated customer and Sensei users ADMIN, CUSTSERV
 r.put(
 	"/customer/:id",
 	body([
@@ -64,7 +73,7 @@ r.put(
 	]).isString(),
 	handleInputErrors
 );
-// Available only to authenticated customer and Senpai users ADMIN, CUSTSERV
+// Available only to authenticated customer and Sensei users ADMIN, CUSTSERV
 r.post(
 	"/customer",
 	body([
@@ -82,7 +91,7 @@ r.post(
 	]).isString(),
 	handleInputErrors
 );
-// Available only to authenticated customer and Senpai users ADMIN, CUSTSERV
+// Available only to authenticated customer and Sensei users ADMIN, CUSTSERV
 r.delete("/customer/:id", () => {
 	//
 });
@@ -91,15 +100,15 @@ r.delete("/customer/:id", () => {
  * @description - All customer account route handlers
  */
 
-// Available only to Senpai users ADMIN, CUSTSERV
+// Available only to Sensei users ADMIN, CUSTSERV
 r.get("/account", () => {
 	//
 });
-// Available only to authenticated customer and Senpai users ADMIN, CUSTSERV
+// Available only to authenticated customer and Sensei users ADMIN, CUSTSERV
 r.get("/account/:id", () => {
 	//
 });
-// Available only to authenticated customer and Senpai users ADMIN, CUSTSERV
+// Available only to authenticated customer and Sensei users ADMIN, CUSTSERV
 r.put(
 	"/account/:id",
 	body([
@@ -125,7 +134,7 @@ r.put(
 	handleInputErrors,
 	updateCustomerAccount
 );
-// Available only to authenticated customer and Senpai users ADMIN, CUSTSERV
+// Available only to authenticated customer and Sensei users ADMIN, CUSTSERV
 r.delete("/account/:id", () => {
 	//
 });

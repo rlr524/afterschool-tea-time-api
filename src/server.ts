@@ -61,6 +61,7 @@ app.post(
 	handleInputErrors,
 	createCustomerAccount
 );
+
 app.post(
 	"/signin",
 	body(["login", "password"]).isString(),
