@@ -14,12 +14,15 @@ const r = Router();
  * Account vs Customer
  * The /account routes reference the CustomerAccount table and are required for shopping on HTT. Creating a
  * customer account via the POST /account route (in server.ts as it's not a protected route) creates an account
- * and a customer profile, so creates entries in the CustomerAccount, CustomerProfile and CustomerDetail tables.
- * The /customer routes reference the CustomerProfile and CustomerDetail tables and are additional shopper
- * profiles linked to a single customer account (think Netflix profiles) in that they all sign in with the same
+ * and a customer profile, so creates entries in the CustomerAccount and CustomerProfile tables.
+ * The /customer routes reference the CustomerProfile table and are additional shopper
+ * profiles linked to a single customer account (think Netflix profiles...the account must be signed into in order
+ * to access any of what can be multiple profiles under the account) in that they all sign in with the same
  * login and password, but have their own shopping profiles including limits that can be managed only by the
  * account owner with a specific PIN. This allows, for example, parents to allow college aged children to
- * make purchases while away at school on the parent's account.
+ * make purchases while away at school on the parent's account and, persuant to controls set by the account owner,
+ * allow those purchases to be charged to the account owner's billing info or require the profile holder to use
+ * separate billing info.
  */
 
 /**

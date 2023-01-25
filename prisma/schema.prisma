@@ -10,7 +10,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// The UserAccount table has no relationships to other tables and is only for internal account use
+// The UserAccount table has no relationships to other tables and is only for internal account use on the sensei app
 // Account Levels: ADMIN, CUSTSERV, PRODMGMT, FINANCE, OPERATIONS
 model UserAccount {
   userAccountID       String         @id @default(uuid())
@@ -49,34 +49,53 @@ model CustomerAccount {
   customerAccountActive   Boolean            @default(true)
   createdAt               DateTime           @default(now())
   updatedAt               DateTime           @updatedAt
-  customers               CustomerProfile[]
+  profiles                CustomerProfile[]
   salesTransactions       SalesTransaction[]
 }
 
 // The CustomerProfile table has a M:1 relationship with the CustomerAccount table (e.g. members of a family can use
 // the same customer login and account, but have their own profiles, e.g., favorites list and purchase history).
 model CustomerProfile {
-  customerID            String             @id @default(uuid())
-  customerLastName      String             @db.VarChar(255)
-  customerFirstName     String             @db.VarChar(255)
-  customerMiddleInitial String?            @db.VarChar(1)
-  customerEmail         String
-  customerPhone         String
-  customerShipAddLn1    String
-  customerShipAddLn2    String?
-  customerShipAddCity   String
-  customerShipAddState  String
-  customerShipAddZIP    String
-  customerDOB           String?
-  customerActive        Boolean            @default(true)
-  account               CustomerAccount    @relation(fields: [accountID], references: [customerAccountID])
-  accountID             String
-  favorites             Product[]
-  createdAt             DateTime           @default(now())
-  updatedAt             DateTime           @updatedAt
-  salesTransactions     SalesTransaction[]
-  customerFeedback      CustomerFeedback[]
-  productProductID      String
+  customerID              String             @id @default(uuid())
+  customerLastName        String             @db.VarChar(255)
+  customerFirstName       String             @db.VarChar(255)
+  customerMiddleInitial   String?            @db.VarChar(1)
+  customerEmail           String
+  customerPhone           String
+  customerBillingAddLn1   String
+  customerBillingAddLn2   String?
+  customerBillingAddCity  String
+  customerBillingAddState String
+  customerBillingAddZIP   String
+  customerShipAddLn1      String
+  customerShipAddLn2      String?
+  customerShipAddCity     String
+  customerShipAddState    String
+  customerShipAddZIP      String
+  customerDOB             String?
+  customerActive          Boolean            @default(true)
+  account                 CustomerAccount    @relation(fields: [accountID], references: [customerAccountID])
+  accountID               String
+  favorites               Product[]
+  createdAt               DateTime           @default(now())
+  updatedAt               DateTime           @updatedAt
+  salesTransactions       SalesTransaction[]
+  customerFeedback        CustomerFeedback[]
+  productProductID        String
+  CustomerPayment         CustomerPayment[]
+}
+
+// The CustomerPayment table has a M:1 relationship with the CustomerProfile table as customers can save multiple
+// payment methods on their profiles. Payment methods are linked to a profile, not an account, but profiles 
+// within the same account can share payment methods. This table only holds basic payment information and the
+// paymentID is used as a reference to the Stripe API providing a connector to the system of record for 
+// customer payment account numbers, expiration dates, and verification codes.
+model CustomerPayment {
+  paymentMethodID           String          @id @default(uuid())
+  paymentMethodFriendlyName String          @db.VarChar(255)
+  paymentMethodType         String          @db.VarChar(1)
+  profile                   CustomerProfile @relation(fields: [customerProfileCustomerID], references: [customerID])
+  customerProfileCustomerID String
 }
 
 model Product {

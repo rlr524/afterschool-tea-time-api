@@ -36,6 +36,7 @@ app.use("/api/v1/", protect, router);
  * @todo - Find a different way to server validate DOB without using express-validator and use DATE as the type. This is because express-validator hangs if any other type checks are chained onto isString().
  */
 
+// Allows a user to create a customer account, which also creates a customer profile
 app.post(
 	"/account",
 	body([
@@ -62,6 +63,8 @@ app.post(
 	createCustomerAccount
 );
 
+// Allows a registered user to sign into an account from where they can also choose a profile if the account
+// has multiple profiles associated
 app.post(
 	"/signin",
 	body(["login", "password"]).isString(),
