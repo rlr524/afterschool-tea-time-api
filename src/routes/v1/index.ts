@@ -4,6 +4,7 @@ import {
 	createProduct,
 	updateProduct,
 	deleteProduct,
+	getFavoriteProducts,
 } from "./../../handlers/product";
 import { Router } from "express";
 import { body } from "express-validator";
@@ -26,7 +27,7 @@ const r = Router();
  */
 
 /**
- * @description - Sensei user product route handlers
+ * @description - Sensei user product routes
  */
 
 // Available only to Sensei users ADMIN, PRODMGMT
@@ -47,7 +48,7 @@ r.post(
 r.delete("/product/:id", deleteProduct);
 
 /**
- * @description - All customer profile route handlers
+ * @description - All customer profile routes
  */
 
 // Available only to Sensei users ADMIN, CUSTSERV
@@ -100,7 +101,7 @@ r.delete("/customer/:id", () => {
 });
 
 /**
- * @description - All customer account route handlers
+ * @description - All customer account routes
  */
 
 // Available only to Sensei users ADMIN, CUSTSERV
@@ -141,5 +142,12 @@ r.put(
 r.delete("/account/:id", () => {
 	//
 });
+
+/**
+ * @description Customer favorite products route
+ */
+
+// Available only to Sensei users ADMIN, CUSTSERV, and PRODMGMT and authenticated customer
+r.get("/product/favorites", getFavoriteProducts);
 
 export default r;
