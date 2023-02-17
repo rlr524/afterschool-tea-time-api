@@ -5,6 +5,7 @@ import {
 	updateProduct,
 	deleteProduct,
 	getFavoriteProducts,
+	createProductCategory,
 } from "./../../handlers/product";
 import { Router } from "express";
 import { body } from "express-validator";
@@ -40,12 +41,24 @@ r.put(
 // Available only to Sensei users ADMIN, PRODMGMT
 r.post(
 	"/product",
-	body(["productname", "productvendor", "productcategory"]).isString(),
+	body(["productname"]).isString(),
 	handleInputErrors,
 	createProduct
 );
 // Available only to Sensei users ADMIN, PRODMGMT
 r.delete("/product/:id", deleteProduct);
+
+/**
+ * @description - Sensei user product category routes
+ */
+
+// Available only to Sensei users ADMIN, PRODMGMT
+r.post(
+	"/product-category",
+	body(["productcategoryname"]).isString(),
+	handleInputErrors,
+	createProductCategory
+);
 
 /**
  * @description - All customer profile routes

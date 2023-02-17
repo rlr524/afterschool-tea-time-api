@@ -68,8 +68,8 @@ export const createProduct = async (req, res) => {
 	const product = await prisma.product.create({
 		data: {
 			productName: req.body.productname,
-			productVendor: req.body.productvendor,
-			productCategory: req.body.productcategory,
+			// productVendor: req.body.productvendor,
+			// productCategory: req.body.productcategory,
 		},
 	});
 
@@ -123,4 +123,14 @@ export const deleteProduct = async (req, res) => {
 	});
 
 	res.json({ data: deletedProduct });
+};
+
+export const createProductCategory = async (req, res) => {
+	const productCategory = await prisma.productCategory.create({
+		data: {
+			productCategoryName: req.body.productcategoryname,
+		},
+	});
+
+	res.json({ data: productCategory });
 };

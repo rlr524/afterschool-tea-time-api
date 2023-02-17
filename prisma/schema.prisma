@@ -101,15 +101,15 @@ model CustomerPayment {
 model Product {
   productID                        String             @id @default(uuid())
   productName                      String             @unique @db.VarChar(255)
-  productActive                    Boolean            @default(true)
-  productCategory                  ProductCategory    @relation(fields: [productCategoryProductCategoryID], references: [productCategoryID])
+  productActive                    Boolean?           @default(true)
+  productCategory                  ProductCategory?   @relation(fields: [productCategoryProductCategoryID], references: [productCategoryID])
   createdAt                        DateTime           @default(now())
   updatedAt                        DateTime           @updatedAt
   salesTransactions                SalesTransaction[]
   productDetail                    ProductDetail[]
   productVendor                    ProductVendor?     @relation(fields: [productVendorProductVendorID], references: [productVendorID])
   productVendorProductVendorID     String?
-  productCategoryProductCategoryID String
+  productCategoryProductCategoryID String?
   CustomerProfile                  CustomerProfile?   @relation(fields: [customerProfileCustomerID], references: [customerID])
   customerProfileCustomerID        String?
 }
