@@ -6,6 +6,14 @@ function createAccountNumber() {
 	return Math.floor(Date.now() / 1000);
 }
 
+/**
+ * @param req
+ * @param res
+ * @description - Create one customer account
+ * @access - Public
+ * @route /account
+ * @method POST
+ */
 export const createCustomerAccount = async (req, res) => {
 	const customerLoginCandidate = req.body.login;
 	console.log("Customer login candidate is: " + customerLoginCandidate);
@@ -54,7 +62,14 @@ export const createCustomerAccount = async (req, res) => {
 	res.json({ token });
 };
 
-// TODO: Update this for a put vs a post
+/**
+ * @param req
+ * @param res
+ * @description - Update one customer account
+ * @access - Authenticated customer account or Sensei CUSTSERV, ADMIN
+ * @route /account
+ * @method PUT
+ */
 export const updateCustomerAccount = async (req, res) => {
 	const customerLoginCandidate = req.body.login;
 	const id = "";
@@ -88,6 +103,14 @@ export const updateCustomerAccount = async (req, res) => {
 	});
 };
 
+/**
+ * @param req
+ * @param res
+ * @description - Sign into a customer account
+ * @access - Public
+ * @route /signin
+ * @method POST
+ */
 export const signin = async (req, res) => {
 	console.log("attempting signin...");
 	const customerAccount = await prisma.customerAccount.findUnique({

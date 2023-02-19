@@ -125,6 +125,14 @@ export const deleteProduct = async (req, res) => {
 	res.json({ data: deletedProduct });
 };
 
+/**
+ * @param req
+ * @param res
+ * @description - Add one product category
+ * @access - Sensei users ADMIN, PRODMGMT
+ * @route /product-category
+ * @method POST
+ */
 export const createProductCategory = async (req, res) => {
 	const productCategory = await prisma.productCategory.create({
 		data: {
@@ -133,4 +141,30 @@ export const createProductCategory = async (req, res) => {
 	});
 
 	res.json({ data: productCategory });
+};
+
+/**
+ * @param req
+ * @param res
+ * @description - Add one product vendor
+ * @access - Sensei users ADMIN, PRODMGMT
+ * @route /product-vendor
+ * @method POST
+ */
+export const createProductVendor = async (req, res) => {
+	const productVendor = await prisma.productVendor.create({
+		data: {
+			productVendorName: req.body.productvendorname,
+			productVendorEmail: req.body.productvendoremail,
+			productVendorPhone: req.body.productvendorphone,
+			productVendorAddLn1: req.body.productvendoraddln1,
+			productVendorAddLn2: req.body.productvendoraddln2,
+			productVendorAddCity: req.body.productvendoraddcity,
+			productVendorAddState: req.body.productvenddoraddstate,
+			productVendorAddZIP: req.body.productvendoraddzip,
+			productVendorActive: req.body.productvendoractive,
+			productVendorTerms: req.body.productvendorterms,
+		},
+	});
+	res.json({ data: productVendor });
 };

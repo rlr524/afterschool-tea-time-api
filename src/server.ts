@@ -75,7 +75,7 @@ app.post(
 app.get("/product", getAllProducts);
 app.get("/product/:id", getOneProduct);
 
-// Need to add interbal protection to these routes, e.g. limited to specific IP range
+// Need to add internal protection to these routes, e.g. limited to specific IP range
 app.post("/sensei-account", createUserAccount);
 app.post("/sensei-signin", userSignin);
 

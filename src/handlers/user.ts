@@ -1,6 +1,14 @@
 import { createJWT, hashPassword, comparePasswords } from "./../modules/auth";
 import prisma from "../db";
 
+/**
+ * @param req
+ * @param res
+ * @description - Create one Sensei user account
+ * @access - Sensei users as validated by HTT IP address
+ * @route /sensei-account
+ * @method POST
+ */
 export const createUserAccount = async (req, res) => {
 	const userLoginCandidate = req.body.username;
 
@@ -28,6 +36,14 @@ export const createUserAccount = async (req, res) => {
 	res.json({ token });
 };
 
+/**
+ * @param req
+ * @param res
+ * @description - Sign into a Sensei user account
+ * @access - Sensei users as validated by HTT IP address
+ * @route /sensei-signin
+ * @method POST
+ */
 export const userSignin = async (req, res) => {
 	const userAccount = await prisma.userAccount.findUnique({
 		where: {

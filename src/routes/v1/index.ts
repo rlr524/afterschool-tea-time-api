@@ -6,6 +6,7 @@ import {
 	deleteProduct,
 	getFavoriteProducts,
 	createProductCategory,
+	createProductVendor,
 } from "./../../handlers/product";
 import { Router } from "express";
 import { body } from "express-validator";
@@ -58,6 +59,28 @@ r.post(
 	body(["productcategoryname"]).isString(),
 	handleInputErrors,
 	createProductCategory
+);
+
+/**
+ * @description - Sensei user product vendor routes
+ */
+
+// Available only to Sensei users ADMIN, PRODMGMT
+r.post(
+	"/product-vendor",
+	body([
+		"productvendorname",
+		"productvendoremail",
+		"productvendorphone",
+		"productvendoraddln1",
+		"productvendoraddln2",
+		"productvendoraddcity",
+		"productvenddoraddstate",
+		"productvendoraddzip",
+		"productvendorterms",
+	]).isString(),
+	handleInputErrors,
+	createProductVendor
 );
 
 /**
