@@ -14,52 +14,50 @@ function createAccountNumber() {
  * @route /account
  * @method POST
  */
-export const createCustomerAccount = async (req, res) => {
-	const customerLoginCandidate = req.body.login;
-	console.log("Customer login candidate is: " + customerLoginCandidate);
-
-	if (
-		await prisma.customerAccount.findFirst({
-			where: { customerLogin: customerLoginCandidate },
-		})
-	) {
-		res.status(406);
-		res.json({
-			message: `customer account login '${customerLoginCandidate}' is unavailable`,
+export const createCustomerAccount = async (req, res, next) => {
+	try {
+		const customerAccount = await prisma.customerAccount.create({
+			data: {
+				customerLogin: req.body.login,
+				customerPassword: await hashPassword(req.body.password),
+				customerAccountNumber: createAccountNumber(),
+				customerLastName: req.body.lastname,
+				customerFirstName: req.body.firstname,
+				customerMiddleInitial: req.body.middleinitial,
+				customerEmail: req.body.email,
+				customerPhone: req.body.customerPhone,
+				customerBillingAddLn1: req.body.customerBillingAddLn1,
+				customerBillingAddLn2: req.body.customerBillingAddLn2,
+				customerBillingAddCity: req.body.customerBillingAddCity,
+				customerBillingAddState: req.body.customerBillingAddState,
+				customerBillingAddZIP: req.body.customerBillingAddZIP,
+				customerShipAddLn1: req.body.customerShipAddLn1,
+				customerShipAddLn2: req.body.customerShipAddLn2,
+				customerShipAddCity: req.body.customerShipAddCity,
+				customerShipAddState: req.body.customerShipAddState,
+				customerShipAddZIP: req.body.customerShipAddZIP,
+				customerDOB: req.body.customerDOB,
+			},
 		});
-		return;
+
+		console.log("Data added...generating token");
+
+		const token = createJWT(customerAccount);
+		res.json({ token });
+	} catch (e) {
+		e.type = "input";
+		console.log(e.message);
+		next(e);
 	}
-
-	console.log("Login candidate ok...adding data");
-
-	const customerAccount = await prisma.customerAccount.create({
-		data: {
-			customerLogin: customerLoginCandidate,
-			customerPassword: await hashPassword(req.body.password),
-			customerAccountNumber: createAccountNumber(),
-			customerLastName: req.body.lastname,
-			customerFirstName: req.body.firstname,
-			customerMiddleInitial: req.body.middleinitial,
-			customerEmail: req.body.email,
-			customerPhone: req.body.customerPhone,
-			customerBillingAddLn1: req.body.customerBillingAddLn1,
-			customerBillingAddLn2: req.body.customerBillingAddLn2,
-			customerBillingAddCity: req.body.customerBillingAddCity,
-			customerBillingAddState: req.body.customerBillingAddState,
-			customerBillingAddZIP: req.body.customerBillingAddZIP,
-			customerShipAddLn1: req.body.customerShipAddLn1,
-			customerShipAddLn2: req.body.customerShipAddLn2,
-			customerShipAddCity: req.body.customerShipAddCity,
-			customerShipAddState: req.body.customerShipAddState,
-			customerShipAddZIP: req.body.customerShipAddZIP,
-			customerDOB: req.body.customerDOB,
-		},
-	});
-
-	console.log("Data added...generating token");
-
-	const token = createJWT(customerAccount);
-	res.json({ token });
+	/**
+	 * 	Invalid `prisma.customerAccount.create()` invocation in
+	 * /Users/robranf/Developer/WebProjects/afterschool-tea-time-api/src/handlers/customer.ts:19:33
+	 * 16
+	 * 17 export const createCustomerAccount = async (req, res, next) => {
+	 * 18    try {
+	 * → 19            const customerAccount = await prisma.customerAccount.create(
+	 * Unique constraint failed on the fields: (`customerLogin`)
+	 */
 };
 
 /**

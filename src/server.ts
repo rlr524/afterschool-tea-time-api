@@ -1,3 +1,4 @@
+import { errorHandler } from "./utilities/error";
 import { createCustomerAccount, signin } from "./handlers/customer";
 import { createUserAccount, userSignin } from "./handlers/user";
 import { getOneProduct, getAllProducts } from "./handlers/product";
@@ -78,5 +79,7 @@ app.get("/product/:id", getOneProduct);
 // Need to add internal protection to these routes, e.g. limited to specific IP range
 app.post("/sensei-account", createUserAccount);
 app.post("/sensei-signin", userSignin);
+
+app.use(errorHandler);
 
 export default app;
