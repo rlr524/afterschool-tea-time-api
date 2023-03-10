@@ -15,7 +15,10 @@ export const createJWT = (customerAccount) => {
 			id: customerAccount.id,
 			customerLogin: customerAccount.customerLogin,
 		},
-		process.env.JWT_SECRET
+		process.env.JWT_SECRET,
+		{
+			algorithm: "RS256",
+		}
 	);
 	return token;
 };
