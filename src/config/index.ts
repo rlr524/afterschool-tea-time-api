@@ -1,0 +1,30 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
+import merge from "lodash.merge";
+
+process.env.NODE_ENV = process.env.NODE_ENV || "development";
+const stage = process.env.STAGE || "local";
+
+let envConfig: Record<string, unknown>;
+
+if (stage === "production") {
+	envConfig = require("./prod").default;
+} else if (stage === "staging") {
+	envConfig = require("./staging").default;
+} else if (stage === "testing") {
+	envConfig = require("./testing").default;
+} else {
+	envConfig = require("./local").default;
+}
+
+export default merge(
+	{
+		stage,
+		env: process.env.NODE_ENV,
+		port: 3001,
+		secrets: {
+			jwt: process.env.JWT_SECRET,
+			dbUrl: process.env.DATABASE_URL,
+		},
+	},
+	envConfig
+);
