@@ -1,4 +1,8 @@
-import { createJWT, hashPassword, comparePasswords } from "./../modules/auth";
+import {
+	createJWTUser,
+	hashPassword,
+	comparePasswords,
+} from "./../modules/auth";
 import prisma from "../db";
 
 /**
@@ -6,34 +10,24 @@ import prisma from "../db";
  * @param res
  * @description - Create one Sensei user account
  * @access - Sensei users as validated by HTT IP address
- * @route /sensei-account
+ * @route /sensei-user
  * @method POST
  */
-export const createUserAccount = async (req, res) => {
-	const userLoginCandidate = req.body.username;
-
-	if (
-		await prisma.userAccount.findFirst({
-			where: { userAccountLogin: userLoginCandidate },
-		})
-	) {
-		res.status(406);
-		res.json({
-			message: `customer account login '${userLoginCandidate}' is unavailable`,
+export const createUserAccount = async (req, res, next) => {
+	try {
+		const userAccount = await prisma.userAccount.create({
+			data: {
+				userAccountLogin: req.body.username,
+				userAccountPassword: await hashPassword(req.body.password),
+				userAccountEmail: req.body.email,
+			},
 		});
-		return;
+		const token = createJWTUser(userAccount);
+		res.json({ token });
+	} catch (e) {
+		e.type = "input";
+		next(e);
 	}
-
-	const userAccount = await prisma.userAccount.create({
-		data: {
-			userAccountLogin: userLoginCandidate,
-			userAccountPassword: await hashPassword(req.body.password),
-			userAccountEmail: req.body.email,
-		},
-	});
-
-	const token = createJWT(userAccount);
-	res.json({ token });
 };
 
 /**
@@ -63,6 +57,6 @@ export const userSignin = async (req, res) => {
 		return;
 	}
 
-	const token = createJWT(userAccount);
+	const token = createJWTUser(userAccount);
 	res.json({ token });
 };

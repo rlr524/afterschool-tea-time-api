@@ -16,7 +16,7 @@ model UserAccount {
   userAccountID       String         @id @default(uuid())
   userAccountLogin    String         @unique
   userAccountPassword String
-  userAccountLevel    String         @default("CUSTSERV")
+  userAccountLevel    String?        @default("CUSTSERV")
   userAccountEmail    String
   userAccountActive   Boolean        @default(true)
   createdAt           DateTime       @default(now())

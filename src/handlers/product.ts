@@ -64,16 +64,21 @@ export const getOneProduct = async (req, res) => {
  * @route /product
  * @method POST
  */
-export const createProduct = async (req, res) => {
-	const product = await prisma.product.create({
-		data: {
-			productName: req.body.productname,
-			// productVendor: req.body.productvendor,
-			// productCategory: req.body.productcategory,
-		},
-	});
+export const createProduct = async (req, res, next) => {
+	try {
+		const product = await prisma.product.create({
+			data: {
+				productName: req.body.productname,
+				// productVendor: req.body.productvendor,
+				// productCategory: req.body.productcategory,
+			},
+		});
 
-	res.json({ data: product });
+		res.json({ data: product });
+	} catch (e) {
+		e.type = "auth";
+		next(e);
+	}
 };
 
 /**

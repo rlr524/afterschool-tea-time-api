@@ -15,10 +15,18 @@ export const createJWT = (customerAccount) => {
 			id: customerAccount.id,
 			customerLogin: customerAccount.customerLogin,
 		},
-		process.env.JWT_SECRET,
+		process.env.JWT_SECRET
+	);
+	return token;
+};
+
+export const createJWTUser = (userAccount) => {
+	const token = jwt.sign(
 		{
-			algorithm: "RS256",
-		}
+			id: userAccount.id,
+			userAccountLogin: userAccount.userAccountLogin,
+		},
+		process.env.JWT_SECRET
 	);
 	return token;
 };
