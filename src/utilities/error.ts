@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const errorHandler = (err, req, res, next) => {
 	if (err.type === "auth") {
 		res.status(401).json({ message: "unauthorized" });
