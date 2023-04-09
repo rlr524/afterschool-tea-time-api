@@ -4,8 +4,11 @@
 	"description": "API for the AfterschoolTeaTime ecommerce site",
 	"main": "src/index.js",
 	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1",
-		"dev": "nodemon -w 'src/**/*.ts' -x ts-node --files -H -T src/index.ts"
+		"build": "tsc -p tsconfig.json",
+		"start": "node dist/index.js",
+		"test": "jest",
+		"dev": "nodemon -w 'src/**/*.ts' -x ts-node --files -H -T src/index.ts",
+		"blocking": "ts-node blocking.ts"
 	},
 	"author": "Rob Ranf",
 	"license": "ISC",

@@ -14,10 +14,24 @@ import prisma from "../db";
  * @method POST
  */
 export const createUserAccount = async (req, res, next) => {
+	const userLoginCandidate = req.body.username;
+
+	if (
+		await prisma.userAccount.findFirst({
+			where: { userAccountLogin: userLoginCandidate },
+		})
+	) {
+		res.status(406);
+		res.json({
+			message: `customer account login '${userLoginCandidate}' is unavailable`,
+		});
+		return;
+	}
+
 	try {
 		const userAccount = await prisma.userAccount.create({
 			data: {
-				userAccountLogin: req.body.username,
+				userAccountLogin: userLoginCandidate,
 				userAccountPassword: await hashPassword(req.body.password),
 				userAccountEmail: req.body.email,
 			},
